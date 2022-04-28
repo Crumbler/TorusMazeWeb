@@ -1,0 +1,22 @@
+{
+  "name": "torusmazeweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crumbler/TorusMazeWeb.git"
+  },
+  "author": "Crumbler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Crumbler/TorusMazeWeb/issues"
+  },
+  "homepage": "https://github.com/Crumbler/TorusMazeWeb#readme",
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
