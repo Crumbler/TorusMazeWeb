@@ -1,4 +1,14 @@
 
-main {
-    background-color: aqua;
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#c {
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: block;
 }
