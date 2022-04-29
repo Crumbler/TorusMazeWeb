@@ -5,10 +5,10 @@ const gl = Global.gl;
 
 export class ShaderProgram {
     #programID;
-    #bindAttributes;
-    #getAllUniformLocations;
+    _bindAttributes;
+    _getAllUniformLocations;
 
-    constructor(...shaderInfos) {
+    _init(...shaderInfos) {
         const shaderIds = new Array(shaderInfos.length);
 
         for (let i = 0; i < shaderIds.length; ++i) {
@@ -17,11 +17,11 @@ export class ShaderProgram {
 
         this.#programID = gl.createProgram();
 
-        for (const id of shaderIds) {
+        for (let id of shaderIds) {
             gl.attachShader(this.#programID, id);
         }
 
-        this.#bindAttributes?.();
+        this._bindAttributes?.();
 
         gl.linkProgram(this.#programID);
 
@@ -31,7 +31,7 @@ export class ShaderProgram {
         }
 
         gl.validateProgram(this.#programID);
-        this.#getAllUniformLocations?.();
+        this._getAllUniformLocations?.();
     }
 
     start() {
@@ -40,6 +40,18 @@ export class ShaderProgram {
 
     stop() {
         gl.useProgram(0);
+    }
+
+    _bindAttribute(attribute, variableName) {
+        gl.bindAttribLocation(this.#programID, attribute, variableName);
+    }
+
+    _getUniformLocation(uniformName) {
+        return gl.getUniformLocation(this.#programID, uniformName);
+    }
+
+    static _LoadVector2(location, x, y) {
+        gl.uniform2f(location, x, y);
     }
 
     static #LoadShader(shaderInfo) {
@@ -54,7 +66,7 @@ export class ShaderProgram {
         if (success) {
             return shaderID;
         }
-    
+
         console.error(gl.getShaderInfoLog(shaderID));
     }
 }

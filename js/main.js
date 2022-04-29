@@ -4,6 +4,7 @@ import { ShaderProgram } from '/shaderprogram.js';
 import { ShaderInfo } from '/shaderinfo.js';
 import { Loader } from '/loader.js';
 import { Renderer } from '/renderer.js';
+import { TorusShader } from '/torusshader.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;
@@ -13,56 +14,63 @@ let program, model;
 
 
 async function main() {
-    if (!gl) {
-        console.error('WebGL 2 not supported');
-        return;
-    }
+  if (!gl) {
+    console.error('WebGL 2 not supported');
+    return;
+  }
 
-    await Global.Init();
+  await Global.Init();
 
-    await init();
+  await init();
 
-    requestAnimationFrame(display);
+  requestAnimationFrame(display);
 }
 
 
 async function init() {
-    gl.clearColor(0, 0, 0, 0);
+  gl.clearColor(0, 0, 0, 1);
 
-    program = new ShaderProgram(new ShaderInfo('Vertex shader', Global.shaders.vShader, gl.VERTEX_SHADER),
-      new ShaderInfo('Fragment shader', Global.shaders.fShader, gl.FRAGMENT_SHADER));
+  program = new TorusShader(Global.displayWidth, Global.displayHeight);
 
-    const positions = [
-      -1, 1,
-      1, 1,
-      -1, -1,
-      1, -1
-    ];
+  const positions = [
+    -1, 1,
+    1, 1,
+    -1, -1,
+    1, -1
+  ];
 
-    model = Loader.LoadTorusRect(positions);
+  model = Loader.LoadTorusRect(positions);
+}
+
+
+function resize() {
+  gl.viewport(0, 0, canvas.width, canvas.height);
+
+  program.start();
+  program.setResolution(canvas.width, canvas.height);
 }
 
 
 let oldTime = 0;
 
 function display(currTime) {
-    if (Utils.ResizeCanvas()) {
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
+  if (Utils.ResizeCanvas()) {
+    resize();
+  }
 
-    currTime *= 0.001;
+  currTime *= 0.001;
 
-    const deltaTime = currTime - oldTime;
+  const deltaTime = currTime - oldTime;
 
-    oldTime = currTime;
+  oldTime = currTime;
 
-    Renderer.Prepare();
+  Renderer.Prepare();
 
-    program.start();
+  program.start();
 
-    Renderer.RenderTorusRect(model);
+  Renderer.RenderTorusRect(model);
 
-    requestAnimationFrame(display);
+  requestAnimationFrame(display);
 }
 
 

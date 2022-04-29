@@ -11,7 +11,6 @@ export class Renderer {
     static RenderTorusRect(model) {
         gl.bindVertexArray(model.vaoID);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, model.vertexCount);
-        //gl.bindVertexArray(0);
     }
 
     static UpdateProjectionMatrix(shader, mat) {
