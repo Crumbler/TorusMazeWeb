@@ -1,8 +1,12 @@
 
+import { Global } from '/global.js';
+
+const canvas = Global.canvas;
+
 export class Utils {
-    static resizeCanvasToDisplaySize(canvas) {
-        const displayWidth  = canvas.clientWidth;
-        const displayHeight = canvas.clientHeight;
+    static ResizeCanvas() {
+        const displayWidth  = Global.displayWidth;
+        const displayHeight = Global.displayHeight;
        
         const needResize = canvas.width  !== displayWidth ||
                            canvas.height !== displayHeight;
@@ -11,5 +15,7 @@ export class Utils {
           canvas.width  = displayWidth;
           canvas.height = displayHeight;
         }
+
+        return needResize;
     }
 }

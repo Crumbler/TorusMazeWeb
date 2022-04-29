@@ -9,21 +9,27 @@ const canvas = Global.canvas;
 const gl = Global.gl;
 
 
+let program, model;
+
+
 async function main() {
     if (!gl) {
         console.error('WebGL 2 not supported');
         return;
     }
 
-    Utils.resizeCanvasToDisplaySize(canvas);
-
-    gl.viewport(0, 0, canvas.width, canvas.height);
-
-    gl.clearColor(0, 0, 0, 0);
-
     await Global.Init();
 
-    const program = new ShaderProgram(new ShaderInfo('Vertex shader', Global.shaders.vShader, gl.VERTEX_SHADER),
+    await init();
+
+    requestAnimationFrame(display);
+}
+
+
+async function init() {
+    gl.clearColor(0, 0, 0, 0);
+
+    program = new ShaderProgram(new ShaderInfo('Vertex shader', Global.shaders.vShader, gl.VERTEX_SHADER),
       new ShaderInfo('Fragment shader', Global.shaders.fShader, gl.FRAGMENT_SHADER));
 
     const positions = [
@@ -33,13 +39,31 @@ async function main() {
       1, -1
     ];
 
-    const model = Loader.LoadTorusRect(positions);
+    model = Loader.LoadTorusRect(positions);
+}
+
+
+let oldTime = 0;
+
+function display(currTime) {
+    if (Utils.ResizeCanvas()) {
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+
+    currTime *= 0.001;
+
+    const deltaTime = currTime - oldTime;
+
+    oldTime = currTime;
 
     Renderer.Prepare();
 
     program.start();
 
     Renderer.RenderTorusRect(model);
+
+    requestAnimationFrame(display);
 }
+
 
 main();
