@@ -4,7 +4,7 @@ const fs = require('fs');
 const port = 80;
 
 
-let shaders = { };
+let shaders = {};
 
 function prepareShaders() {
     const readDirMain = fs.readdirSync('shaders');
@@ -12,8 +12,8 @@ function prepareShaders() {
     readDirMain.forEach(dir => {
         const fileContent = fs.readFileSync(`shaders/${dir}`, 'utf-8');
         const dotInd = dir.indexOf('.');
-        const shadername = dir.slice(0, dotInd);
-        shaders[shadername] = fileContent;
+        const shaderName = dir.slice(0, dotInd);
+        shaders[shaderName] = fileContent;
     });
 }
 
