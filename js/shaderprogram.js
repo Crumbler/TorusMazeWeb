@@ -15,21 +15,27 @@ export class ShaderProgram {
             shaderIds[i] = ShaderProgram.#LoadShader(shaderInfos[i]);
         }
 
-        this.programID = gl.createProgram();
+        this.#programID = gl.createProgram();
 
         for (const id of shaderIds) {
-            gl.attachShader(this.programID, id);
+            gl.attachShader(this.#programID, id);
         }
 
         this.#bindAttributes?.();
 
-        gl.linkProgram(this.programID);
-        gl.validateProgram(this.programID);
+        gl.linkProgram(this.#programID);
+
+        const success = gl.getProgramParameter(this.#programID, gl.LINK_STATUS);
+        if (!success) {
+            throw ("Program failed to link: " + gl.getProgramInfoLog(this.#programID));
+        }
+
+        gl.validateProgram(this.#programID);
         this.#getAllUniformLocations?.();
     }
 
     start() {
-        gl.useProgram(this.programID);
+        gl.useProgram(this.#programID);
     }
 
     stop() {
