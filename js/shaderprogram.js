@@ -54,6 +54,10 @@ export class ShaderProgram {
         gl.uniform2f(location, x, y);
     }
 
+    static _LoadMatrix(location, mat) {
+        gl.uniformMatrix4fv(location, true, mat.data);
+    }
+
     static #LoadShader(shaderInfo) {
         const shaderID = gl.createShader(shaderInfo.type);
 

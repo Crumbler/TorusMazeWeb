@@ -29,7 +29,7 @@ async function main() {
 async function init() {
   gl.clearColor(0, 0, 0, 1);
 
-  program = new TorusShader(Global.displayWidth, Global.displayHeight);
+  program = new TorusShader(Global.displayWidth, Global.displayHeight, Global.projMatInv);
 
   const positions = [
     -1, 1,
@@ -45,10 +45,11 @@ async function init() {
 function resize() {
   gl.viewport(0, 0, canvas.width, canvas.height);
 
+  Global.CalcMatrices();
+
   program.start();
   program.setResolution(canvas.width, canvas.height);
-
-  
+  program.setInvProjMatrix(Global.projMatInv);
 }
 
 
