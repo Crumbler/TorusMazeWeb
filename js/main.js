@@ -1,10 +1,9 @@
 import { Global } from '/global.js';
 import { Utils } from '/utils.js';
-import { ShaderProgram } from '/shaderprogram.js';
-import { ShaderInfo } from '/shaderinfo.js';
 import { Loader } from '/loader.js';
 import { Renderer } from '/renderer.js';
 import { TorusShader } from '/torusshader.js';
+import { array } from '/vectorious.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;
@@ -48,6 +47,8 @@ function resize() {
 
   program.start();
   program.setResolution(canvas.width, canvas.height);
+
+  
 }
 
 

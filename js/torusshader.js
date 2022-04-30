@@ -12,8 +12,8 @@ export class TorusShader extends ShaderProgram {
         super();
 
         const shaderInfos = [
-            new ShaderInfo('Vertex shader', Global.shaders.vShader, gl.VERTEX_SHADER),
-            new ShaderInfo('Fragment shader', Global.shaders.fShader, gl.FRAGMENT_SHADER)
+            new ShaderInfo('Vertex shader', Global.shaders.vTorusShader, gl.VERTEX_SHADER),
+            new ShaderInfo('Fragment shader', Global.shaders.fTorusShader, gl.FRAGMENT_SHADER)
         ];
 
         this._init(...shaderInfos);
