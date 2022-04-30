@@ -3,7 +3,6 @@ import { Utils } from '/utils.js';
 import { Loader } from '/loader.js';
 import { Renderer } from '/renderer.js';
 import { TorusShader } from '/torusshader.js';
-import { array } from '/vectorious.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;

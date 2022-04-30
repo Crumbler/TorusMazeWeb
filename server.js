@@ -36,6 +36,11 @@ app.get('/vectorious.js', (req, res) => {
 });
 
 
+app.get('/twgl.js', (req, res) => {
+    res.sendFile(__dirname + '/node_modules/twgl.js/dist/4.x/twgl-full.module.js');
+});
+
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });

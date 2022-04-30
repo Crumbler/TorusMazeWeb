@@ -7,6 +7,12 @@ uniform mat4 mProjInv;
 
 out vec4 outColor;
 
+float sdTorus(vec3 p, float rOuter, float rInner)
+{
+    vec2 q = vec2(length(p.xz) - rInner, p.y);
+    return length(q) - rOuter;
+}
+
 float sdSphere(vec3 p, float s)
 {
     return length(p) - s;
@@ -17,7 +23,7 @@ const vec3 sPos = vec3(0, 0, -2);
 
 float map(vec3 p)
 {
-    return sdSphere(p - sPos, 1.0);
+    return sdTorus(p - sPos, 0.1, 1.0);
 }
 
 void main() {

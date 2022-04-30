@@ -1,6 +1,6 @@
 
-
-import { array, zeros } from '/vectorious.js';
+import { array, zeros, NDArray } from '/vectorious.js';
+import { m4 } from '/twgl.js';
 
 export class Global {
     static canvas = document.querySelector("#c");
@@ -12,7 +12,7 @@ export class Global {
     static shaders;
 
     static projMat = zeros(4, 4);
-    static projMatInv;
+    static projMatInv = zeros(4, 4);
 
     static async Init() {
         await this.FetchShaders();
@@ -42,22 +42,10 @@ export class Global {
     }
 
     static #CalcProjectionMatrix() {
-        const ar = this.displayWidth / this.displayHeight;
-        const fov = Math.PI / 2; // 90 degrees
-        const yScale = 1 / Math.tan(fov / 2);
-        const xScale = yScale / ar;
-        const far = 1000, near = 0.1;
-        const frLength = far - near;
-        const cmp1 = (-near - far) / frLength;
-        const cmp2 = -2 * far *near /frLength;
+        m4.perspective(Math.PI / 2, Global.displayWidth / Global.displayHeight, 1000, 0.1, Global.projMat.data);
+        m4.transpose(Global.projMat.data, Global.projMat.data);
 
-        this.projMat.set(0, 0, xScale);
-        this.projMat.set(1, 1, yScale);
-        this.projMat.set(2, 2, cmp1);
-        this.projMat.set(2, 3, cmp2);
-        this.projMat.set(3, 2, -1);
-
-        this.projMatInv = this.projMat.inv();
+        m4.inverse(Global.projMat.data, Global.projMatInv.data);
     }
 
     static OnCanvasResize(entries) {
