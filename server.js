@@ -31,6 +31,11 @@ app.get('/shaders', (req, res) => {
 });
 
 
+app.get('/vectorious.js', (req, res) => {
+    res.sendFile(__dirname + '/node_modules/vectorious/dist/index.esm.js');
+});
+
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
