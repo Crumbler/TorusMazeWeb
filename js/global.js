@@ -1,10 +1,12 @@
 
-import { array, zeros, NDArray } from '/vectorious.js';
-import { m4 } from '/twgl.js';
+import { zeros} from '/vectorious.js';
+import { Camera } from '/camera.js';
 
 export class Global {
     static canvas = document.querySelector("#c");
     static gl = Global.canvas.getContext("webgl2");
+
+    static camera = new Camera();
 
     static displayWidth;
     static displayHeight;
@@ -13,6 +15,8 @@ export class Global {
 
     static projMat = zeros(4, 4);
     static projMatInv = zeros(4, 4);
+    static viewMat = zeros(4, 4);
+    static viewMatInv = zeros(4, 4);
 
     static async Init() {
         await this.FetchShaders();
@@ -22,30 +26,17 @@ export class Global {
 
         const resizeObserver = new ResizeObserver(Global.OnCanvasResize);
         resizeObserver.observe(Global.canvas, {box: 'device-pixel-content-box'});
-
-        this.CalcMatrices();
     }
 
     static async FetchShaders() {
         const response = await fetch('/shaders');
 
         if (response.ok) {
-            this.shaders = await response.json();
+            Global.shaders = await response.json();
         }
         else {
             console.error('Failed to get shaders');
         }
-    }
-
-    static CalcMatrices() {
-        Global.#CalcProjectionMatrix();
-    }
-
-    static #CalcProjectionMatrix() {
-        m4.perspective(Math.PI / 2, Global.displayWidth / Global.displayHeight, 1000, 0.1, Global.projMat.data);
-        m4.transpose(Global.projMat.data, Global.projMat.data);
-
-        m4.inverse(Global.projMat.data, Global.projMatInv.data);
     }
 
     static OnCanvasResize(entries) {

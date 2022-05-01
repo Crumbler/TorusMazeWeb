@@ -50,12 +50,16 @@ export class ShaderProgram {
         return gl.getUniformLocation(this.#programID, uniformName);
     }
 
+    static _LoadFloat(location, x) {
+        gl.uniform1f(location, x);
+    }
+
     static _LoadVector2(location, x, y) {
         gl.uniform2f(location, x, y);
     }
 
     static _LoadMatrix(location, mat) {
-        gl.uniformMatrix4fv(location, true, mat.data);
+        gl.uniformMatrix4fv(location, false, mat.data);
     }
 
     static #LoadShader(shaderInfo) {

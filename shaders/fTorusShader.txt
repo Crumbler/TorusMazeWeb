@@ -2,8 +2,10 @@
 
 precision highp float;
 
+uniform float time;
 uniform vec2 resolution;
 uniform mat4 mProjInv;
+uniform mat4 mViewInv;
 
 out vec4 outColor;
 
@@ -18,31 +20,39 @@ float sdSphere(vec3 p, float s)
     return length(p) - s;
 }
 
-
-const vec3 sPos = vec3(0, 0, -2);
+vec3 sBasePos = vec3(0, 0, 0);
 
 float map(vec3 p)
 {
+    vec3 sPos = sBasePos;
+
     return sdTorus(p - sPos, 0.1, 1.0);
 }
+
+const float eps = 0.001;
 
 void main() {
     vec2 uv = (gl_FragCoord.xy * 2.0 - resolution) / resolution;
 
     vec4 rayClip = mProjInv * vec4(uv.x, uv.y, -1.0, 1.0);
+    rayClip.z = -1.0;
+    rayClip.w = 0.0;
+    rayClip = mViewInv * rayClip;
 
-    vec3 rd = normalize(vec3(rayClip.x, rayClip.y, -1.0));
+    vec3 ro = (mViewInv * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+    vec3 rd = normalize(rayClip.xyz);
     float t = 0.0;
     float h;
     for(int i = 0; i < 50; ++i)
     {
-        vec3 pos = t * rd;
+        vec3 pos = ro + t * rd;
         h = map(pos);
-        if (h < 0.0001) break;
+        if (h < eps) 
+            break;
         t += h;
     }
 
-    vec3 col = vec3(step(h, 0.01));
+    vec3 col = vec3(step(h, eps));
 
-    outColor = vec4(col, 1);
+    outColor = vec4(col, 1.0);
 }

@@ -19,16 +19,26 @@ async function main() {
 
   await Global.Init();
 
-  await init();
+  calcMatrices();
 
-  requestAnimationFrame(display);
+  init();
+
+  requestAnimationFrame(update);
 }
 
+function calcMatrices() {
+  Utils.CalcProjectionMatrix();
+  Utils.CalcViewMatrix();
+}
 
-async function init() {
+function init() {
   gl.clearColor(0, 0, 0, 1);
 
-  program = new TorusShader(Global.displayWidth, Global.displayHeight, Global.projMatInv);
+  Global.camera.pos[1] = 1.0;
+  Global.camera.pos[2] = 1.0;
+
+  program = new TorusShader(Global.displayWidth, Global.displayHeight,
+    Global.projMatInv, Global.viewMatInv);
 
   const positions = [
     -1, 1,
@@ -44,7 +54,7 @@ async function init() {
 function resize() {
   gl.viewport(0, 0, canvas.width, canvas.height);
 
-  Global.CalcMatrices();
+  calcMatrices();
 
   program.start();
   program.setResolution(canvas.width, canvas.height);
@@ -54,24 +64,29 @@ function resize() {
 
 let oldTime = 0;
 
-function display(currTime) {
+function update(currTime) {
   if (Utils.ResizeCanvas()) {
     resize();
   }
 
   currTime *= 0.001;
-
   const deltaTime = currTime - oldTime;
-
   oldTime = currTime;
 
+  Utils.CalcViewMatrix();
+
+  display(currTime);
+
+  requestAnimationFrame(update);
+}
+
+function display(currTime) {
   Renderer.Prepare();
 
   program.start();
-
+  program.setTime(currTime);
+  program.setInvViewMatrix(Global.viewMatInv);
   Renderer.RenderTorusRect(model);
-
-  requestAnimationFrame(display);
 }
 
 

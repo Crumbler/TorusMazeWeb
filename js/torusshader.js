@@ -8,8 +8,10 @@ const gl = Global.gl;
 export class TorusShader extends ShaderProgram {
     #loc_res;
     #loc_mProjInv;
+    #loc_mViewInv;
+    #loc_time;
 
-    constructor(width, height, mProjInv) {
+    constructor(width, height, mProjInv, mViewInv) {
         super();
 
         const shaderInfos = [
@@ -22,6 +24,7 @@ export class TorusShader extends ShaderProgram {
         this.start();
         this.setResolution(width, height);
         this.setInvProjMatrix(mProjInv);
+        this.setInvViewMatrix(mViewInv);
     }
 
     _bindAttributes = function () {
@@ -31,6 +34,12 @@ export class TorusShader extends ShaderProgram {
     _getAllUniformLocations = function () {
         this.#loc_res = this._getUniformLocation('resolution');
         this.#loc_mProjInv = this._getUniformLocation('mProjInv');
+        this.#loc_mViewInv = this._getUniformLocation('mViewInv');
+        this.#loc_time = this._getUniformLocation('time');
+    }
+
+    setTime(time) {
+        ShaderProgram._LoadFloat(this.#loc_time, time);
     }
 
     setResolution(width, height) {
@@ -39,5 +48,9 @@ export class TorusShader extends ShaderProgram {
 
     setInvProjMatrix(mProjInv) {
         ShaderProgram._LoadMatrix(this.#loc_mProjInv, mProjInv);
+    }
+
+    setInvViewMatrix(mViewInv) {
+        ShaderProgram._LoadMatrix(this.#loc_mViewInv, mViewInv);
     }
 }
