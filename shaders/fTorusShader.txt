@@ -9,6 +9,10 @@ uniform mat4 mViewInv;
 
 out vec4 outColor;
 
+const float pi = acos(-1.0);
+const float rOuter = 0.1;
+const float rInner = 1.0;
+
 float sdTorus(vec3 p, float rOuter, float rInner)
 {
     vec2 q = vec2(length(p.xz) - rInner, p.y);
@@ -20,18 +24,39 @@ float sdSphere(vec3 p, float s)
     return length(p) - s;
 }
 
+float getAtan(float y, float x)
+{
+    //return fract(atan(y, x) / (2.0 * pi) + 1.0);
+    return (atan(y, x) + pi) * 0.5 / pi;
+}
+
+vec3 torusColor(vec3 p)
+{
+    float innerAngle = getAtan(p.x, p.z);
+
+    vec3 newAxis = normalize(vec3(p.x, 0.0, p.z));
+    vec3 orbitPos = newAxis * rInner;
+
+    vec3 dv = p - orbitPos;
+    
+    float outerAngle = getAtan(p.y, dot(dv, newAxis));
+
+    return vec3(innerAngle, outerAngle, 1.0);
+}
+
 vec3 sBasePos = vec3(0, 0, 0);
 
 float map(vec3 p)
 {
     vec3 sPos = sBasePos;
 
-    return sdTorus(p - sPos, 0.1, 1.0);
+    return sdTorus(p - sPos, rOuter, rInner);
 }
 
-const float eps = 0.001;
+const float eps = 0.01;
 
-void main() {
+void main()
+{
     vec2 uv = (gl_FragCoord.xy * 2.0 - resolution) / resolution;
 
     vec4 rayClip = mProjInv * vec4(uv.x, uv.y, -1.0, 1.0);
@@ -41,18 +66,21 @@ void main() {
 
     vec3 ro = (mViewInv * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
     vec3 rd = normalize(rayClip.xyz);
+    vec3 pos;
     float t = 0.0;
     float h;
     for(int i = 0; i < 50; ++i)
     {
-        vec3 pos = ro + t * rd;
+        pos = ro + t * rd;
         h = map(pos);
-        if (h < eps) 
+        if (h <= eps) 
             break;
         t += h;
     }
 
-    vec3 col = vec3(step(h, eps));
+    float hitTorus = step(h, eps);
+
+    vec3 col = hitTorus * torusColor(pos);
 
     outColor = vec4(col, 1.0);
 }
