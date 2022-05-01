@@ -12,3 +12,7 @@ html, body {
     margin-bottom: 1rem;
     display: block;
 }
+
+#c:focus {
+    outline: none;
+}
