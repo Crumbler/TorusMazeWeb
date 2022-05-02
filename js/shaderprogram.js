@@ -54,6 +54,10 @@ export class ShaderProgram {
         gl.uniform1f(location, x);
     }
 
+    static _LoadInt(location, x) {
+        gl.uniform1i(location, x);
+    }
+
     static _LoadVector2(location, x, y) {
         gl.uniform2f(location, x, y);
     }

@@ -8,7 +8,7 @@ const canvas = Global.canvas;
 const gl = Global.gl;
 const camera = Global.camera;
 
-let program, model, mouseDown = false;
+let program, model, mazeTexture, mouseDown = false;
 
 
 async function main() {
@@ -21,6 +21,7 @@ async function main() {
   canvas.addEventListener('mousedown', onMouseDown);
   canvas.addEventListener('mouseup', onMouseUp);
   canvas.addEventListener('mousemove', onMouseMove);
+  canvas.addEventListener('mouseleave', onMouseLeave);
 
   await Global.Init();
 
@@ -37,11 +38,20 @@ function calcMatrices() {
 
 
 function onMouseDown(e) {
-  mouseDown = true;
+  if (e.button === 0) {
+    mouseDown = true;
+  }
 }
 
 
 function onMouseUp(e) {
+  if (e.button === 0) {
+    mouseDown = false;
+  }
+}
+
+
+function onMouseLeave(e) {
   mouseDown = false;
 }
 
@@ -70,23 +80,19 @@ function onKey(e) {
 
 function init() {
   gl.clearColor(0, 0, 0, 1);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
   Global.camera.pos[1] = 0.5;
   Global.camera.pos[2] = 1.5;
 
   calcMatrices();
 
+  mazeTexture = Loader.LoadMazeTexture();
+
   program = new TorusShader(Global.displayWidth, Global.displayHeight,
-    Global.projMatInv, Global.viewMatInv);
+    Global.projMatInv, Global.viewMatInv, 0);
 
-  const positions = [
-    -1, 1,
-    1, 1,
-    -1, -1,
-    1, -1
-  ];
-
-  model = Loader.LoadTorusRect(positions);
+  model = Loader.LoadTorusRect();
 }
 
 

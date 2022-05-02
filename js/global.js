@@ -9,8 +9,11 @@ export class Global {
     static camera = new Camera();
 
     static rOuter = 0.1;
-    static rInner = 1.0;
-    static orbitDist = Global.rOuter + 0.3;
+    static rInner = 0.6;
+    static orbitDist = 0.2;
+
+    static gridWidth = 10;
+    static gridHeight = 60;
 
     static displayWidth;
     static displayHeight;
