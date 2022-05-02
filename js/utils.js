@@ -21,15 +21,15 @@ export class Utils {
   }
 
   static CalcProjectionMatrix() {
-    m4.perspective(Math.PI / 2, Global.displayWidth / Global.displayHeight, 1000, 0.1, Global.projMat.data);
+    m4.perspective(Math.PI / 2, Global.displayWidth / Global.displayHeight, 1000, 0.1, Global.projMat);
 
-    m4.inverse(Global.projMat.data, Global.projMatInv.data);
+    m4.inverse(Global.projMat, Global.projMatInv);
   }
 
   static CalcViewMatrix() {
-    m4.lookAt(Global.camera.pos, Global.camera.target, Global.camera.up, Global.viewMatInv.data);
+    m4.lookAt(Global.camera.pos, Global.camera.target, Global.camera.up, Global.viewMatInv);
 
-    m4.inverse(Global.viewMatInv.data, Global.viewMat.data);
+    m4.inverse(Global.viewMatInv, Global.viewMat);
   }
 
   static CalcOrbitPosAndTarget(camera) {

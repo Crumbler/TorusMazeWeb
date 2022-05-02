@@ -31,11 +31,6 @@ app.get('/shaders', (req, res) => {
 });
 
 
-app.get('/vectorious.js', (req, res) => {
-    res.sendFile(__dirname + '/node_modules/vectorious/dist/index.esm.js');
-});
-
-
 app.get('/twgl.js', (req, res) => {
     res.sendFile(__dirname + '/node_modules/twgl.js/dist/4.x/twgl-full.module.js');
 });

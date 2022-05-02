@@ -63,7 +63,7 @@ export class ShaderProgram {
     }
 
     static _LoadMatrix(location, mat) {
-        gl.uniformMatrix4fv(location, false, mat.data);
+        gl.uniformMatrix4fv(location, false, mat);
     }
 
     static #LoadShader(shaderInfo) {

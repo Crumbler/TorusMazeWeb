@@ -1,5 +1,5 @@
 
-import { zeros} from '/vectorious.js';
+import { m4 } from '/twgl.js';
 import { Camera } from '/camera.js';
 
 export class Global {
@@ -21,10 +21,10 @@ export class Global {
 
     static shaders;
 
-    static projMat = zeros(4, 4);
-    static projMatInv = zeros(4, 4);
-    static viewMat = zeros(4, 4);
-    static viewMatInv = zeros(4, 4);
+    static projMat = m4.identity();
+    static projMatInv = m4.identity();
+    static viewMat = m4.identity();
+    static viewMatInv = m4.identity();
 
     static async Init() {
         await this.FetchShaders();
