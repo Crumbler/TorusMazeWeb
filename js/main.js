@@ -3,10 +3,12 @@ import { Utils } from '/utils.js';
 import { Loader } from '/loader.js';
 import { Renderer } from '/renderer.js';
 import { TorusShader } from '/torusshader.js';
+import { Maze } from '/maze.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;
 const camera = Global.camera;
+const maze = new Maze(Global.gridWidth, Global.gridHeight);
 
 let program, model, mazeTexture, mouseDown = false;
 
@@ -87,7 +89,7 @@ function init() {
 
   calcMatrices();
 
-  mazeTexture = Loader.LoadMazeTexture();
+  mazeTexture = Loader.LoadMazeTexture(maze);
 
   program = new TorusShader(Global.displayWidth, Global.displayHeight,
     Global.projMatInv, Global.viewMatInv, 0);

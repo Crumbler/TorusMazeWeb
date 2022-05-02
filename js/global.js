@@ -12,8 +12,9 @@ export class Global {
     static rInner = 0.6;
     static orbitDist = 0.2;
 
-    static gridWidth = 10;
-    static gridHeight = 60;
+    static gridWidth = 60;
+    static gridHeight = 10;
+
 
     static displayWidth;
     static displayHeight;

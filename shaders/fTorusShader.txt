@@ -10,10 +10,14 @@ uniform sampler2D mazeText;
 
 out vec4 outColor;
 
-const float pi = acos(-1.0);
-const float rOuter = 0.1;
-const float rInner = 0.6;
-const float lineWidth = 0.1;
+const float pi = acos(-1.0),
+    rOuter = 0.1,
+    rInner = 0.6,
+    lineWidth = 0.1,
+    gridWidth = 60.0,
+    gridHeight = 10.0;
+
+const vec2 gridDivisor = vec2(gridWidth, gridHeight * 2.0);
 
 float sdTorus(vec3 p, float rOuter, float rInner)
 {
@@ -28,7 +32,7 @@ float sdSphere(vec3 p, float s)
 
 float getAtan(float y, float x)
 {
-    float res = (-atan(y, x) + pi) * 0.5 / pi;
+    float res = (atan(y, x) + pi) * 0.5 / pi;
     return fract(res + 0.5);
 }
 
@@ -43,26 +47,50 @@ vec3 torusColor(vec3 p)
     
     float outerAngle = getAtan(p.y, dot(dv, newAxis));
     
-    //innerAngle *= 10.0;
-    //innerAngle = mod(innerAngle + 0.25, 10.0);
+    innerAngle *= gridWidth;
+    outerAngle *= gridHeight;
 
-    //float c1 = texture(mazeText, vec2(innerAngle, 0.0)).r;
-    float c1;
-    float c2 = 1.0;
+    innerAngle = mod(innerAngle + lineWidth / 2.0, gridWidth);
 
-    c1 = fract(innerAngle * 60.0);
-    c1 = step(lineWidth, c1);
+    float c1 = fract(innerAngle),
+        c2 = fract(outerAngle);
 
-    return vec3(c1);
+    float col1, col2;
+
+    if (c1 <= lineWidth)
+    {
+        vec2 uv = floor(vec2(innerAngle, outerAngle));
+        
+        uv.y = uv.y * 2.0 + 1.0;
+        uv += 0.5;
+        uv /= gridDivisor;
+        col1 = 1.0 - texture(mazeText, uv).r;
+    }
+    else
+    {
+        col1 = 1.0;
+    }
+
+    if (c2 <= lineWidth)
+    {
+        vec2 uv = floor(vec2(innerAngle, outerAngle));
+        
+        uv.y = uv.y * 2.0;
+        uv += 0.5;
+        uv /= gridDivisor;
+        col2 = 1.0 - texture(mazeText, uv).r;
+    }
+    else
+    {
+        col2 = 1.0;
+    }
+
+    return vec3(min(col1, col2));
 }
-
-vec3 sBasePos = vec3(0, 0, 0);
 
 float map(vec3 p)
 {
-    vec3 sPos = sBasePos;
-
-    return sdTorus(p - sPos, rOuter, rInner);
+    return sdTorus(p, rOuter, rInner);
 }
 
 const float eps = 0.01;
