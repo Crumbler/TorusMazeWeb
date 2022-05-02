@@ -41,12 +41,12 @@ export class Loader {
         return textureID;
     }
 
-    static UpdateMazeTexture(textureID) {
-        const data = new Uint8Array([
-            0, 127, 255
-        ]);
+    static UpdateMazeTexture(textureID, maze) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textureID);
 
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0.0, 0.0, 3, 1, gl.RED, gl.UNSIGNED_BYTE, data);
+        // offset 0, 0
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0.0, 0.0, maze.width, maze.height * 2, gl.RED, gl.UNSIGNED_BYTE, maze.data);
     }
 
     static #StoreTorusRectPoints(attributeNumber, data) {

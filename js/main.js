@@ -76,7 +76,24 @@ function onMouseMove(e) {
 
 
 function onKey(e) {
-  //console.log(e.code);
+  if (e.code === 'KeyR') {
+    fetchMaze();
+  }
+}
+
+
+async function fetchMaze() {
+  const res = await fetch('/maze');
+
+  const buffer = await res.arrayBuffer();
+
+  maze.grid = new Uint8Array(buffer);
+
+  maze.convertGrid();
+
+  Loader.UpdateMazeTexture(mazeTexture, maze);
+
+  camera.reset();
 }
 
 

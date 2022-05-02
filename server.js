@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const { generateMaze } = require('./maze.js');
 const port = 80;
-
+const gridWidth = 60, gridHeight = 10;
 
 let shaders = {};
 
@@ -33,6 +34,13 @@ app.get('/shaders', (req, res) => {
 
 app.get('/twgl.js', (req, res) => {
     res.sendFile(__dirname + '/node_modules/twgl.js/dist/4.x/twgl-full.module.js');
+});
+
+
+app.get('/maze', (req, res) => {
+    const mazeArr = generateMaze(gridWidth, gridHeight);
+
+    res.send(Buffer.from(mazeArr));
 });
 
 

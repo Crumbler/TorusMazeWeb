@@ -10,6 +10,11 @@ export class Maze {
         this.height = height;
         this.grid = new Uint8Array(width * height);
         this.data = new Uint8Array(width * height * 2);
+
+        this.grid[0] = 3;
+        this.grid[1] = 1;
+
+        //this.convertGrid();
     }
 
     convertGrid() {
@@ -18,12 +23,13 @@ export class Maze {
 
         for (let i = 0; i < this.height; ++i) {
             for (let j = 0; j < this.width; ++j) {
+                const cell = this.grid[i * this.width + j];
 
-                const hasLeftWall = this.data[i * this.width + j] & wallLeft,
-                    hasTopWall = this.data[i * this.height + j] & wallTop;
+                const hasLeftWall = cell & wallLeft,
+                    hasTopWall = cell & wallTop;
 
-                this.setData(i * 2, j, hasLeftWall);
-                this.setData(i * 2 + 1, j, hasTopWall);
+                this.setData(i * 2 + 1, j, hasLeftWall);
+                this.setData(i * 2, j, hasTopWall);
             }
         }
     }
