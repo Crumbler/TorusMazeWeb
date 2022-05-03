@@ -51,41 +51,44 @@ vec3 torusColor(vec3 p)
     outerAngle *= gridHeight;
 
     innerAngle = mod(innerAngle + lineWidth / 2.0, gridWidth);
+    outerAngle = mod(outerAngle + lineWidth / 2.0, gridHeight);
 
     float c1 = fract(innerAngle),
         c2 = fract(outerAngle);
 
-    float col1, col2;
+    float col1, col2, col3;
 
-    if (c1 <= lineWidth)
-    {
-        vec2 uv = floor(vec2(innerAngle, outerAngle));
+    vec2 baseUv = floor(vec2(innerAngle, outerAngle));
+
+    vec2 uv = baseUv;
         
-        uv.y = uv.y * 2.0 + 1.0;
-        uv += 0.5;
-        uv /= gridDivisor;
-        col1 = 1.0 - texture(mazeText, uv).r;
-    }
-    else
-    {
-        col1 = 1.0;
-    }
+    uv.y = uv.y * 2.0 + 1.0;
+    uv += 0.5;
+    uv /= gridDivisor;
+    col1 = texture(mazeText, uv).r;
 
-    if (c2 <= lineWidth)
-    {
-        vec2 uv = floor(vec2(innerAngle, outerAngle));
-        
-        uv.y = uv.y * 2.0;
-        uv += 0.5;
-        uv /= gridDivisor;
-        col2 = 1.0 - texture(mazeText, uv).r;
-    }
-    else
-    {
-        col2 = 1.0;
-    }
+    uv = baseUv;
+    
+    uv.y = uv.y * 2.0;
+    uv += 0.5;
+    uv /= gridDivisor;
+    col2 = texture(mazeText, uv).r;
 
-    return vec3(min(col1, col2));
+    uv = baseUv;
+    
+    uv.x -= 1.0;
+    uv.y = uv.y * 2.0;
+    uv += 0.5;
+    uv /= gridDivisor;
+    col3 = texture(mazeText, uv).r;
+
+    col1 *= step(c1, lineWidth);
+    col2 *= step(c2, lineWidth);
+    col3 *= step(c1, lineWidth) * step(c2, lineWidth);
+
+    col2 = max(col2, col3);
+
+    return vec3(1.0 - max(col1, col2));
 }
 
 float map(vec3 p)
