@@ -29,6 +29,8 @@ async function main() {
 
   init();
 
+  await fetchMaze();
+
   requestAnimationFrame(update);
 }
 
@@ -83,7 +85,7 @@ function onKey(e) {
 
 
 async function fetchMaze() {
-  const res = await fetch('/maze');
+  const res = await fetch('/maze/10-60');
 
   const buffer = await res.arrayBuffer();
 

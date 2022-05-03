@@ -10,11 +10,6 @@ export class Maze {
         this.height = height;
         this.grid = new Uint8Array(width * height);
         this.data = new Uint8Array(width * height * 2);
-
-        this.grid[0] = 3;
-        this.grid[1] = 1;
-
-        //this.convertGrid();
     }
 
     convertGrid() {

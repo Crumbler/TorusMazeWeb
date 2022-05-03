@@ -9,7 +9,7 @@ export class Camera {
     target = v3.create(0.0, 0.0, 0.0);
 
     reset() {
-        this.angleX = (0.25 / Global.gridWidth) * Math.PI * 2.0;
-        this.angleY = (0.25 / Global.gridHeight) * Math.PI * 2.0;
+        this.angleX = (0.5 / Global.gridWidth) * Math.PI * 2.0;
+        this.angleY = (0.5 / Global.gridHeight) * Math.PI * 2.0;
     }
 }

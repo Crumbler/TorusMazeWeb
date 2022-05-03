@@ -37,8 +37,11 @@ app.get('/twgl.js', (req, res) => {
 });
 
 
-app.get('/maze', (req, res) => {
-    const mazeArr = generateMaze(gridWidth, gridHeight);
+app.get('/maze/:height-:width', (req, res) => {
+    const width = Number(req.params.width),
+        height = Number(req.params.height);
+
+    const mazeArr = generateMaze(width, height);
 
     res.send(Buffer.from(mazeArr));
 });
