@@ -39,7 +39,7 @@ export class Utils {
     return v3.mulScalar(v3.create(s1, 0.0, c1), Global.rInner);
   }
 
-  static CalcOrbitPos(angleX, angleY) {
+  static CalcOrbitPos(angleX, angleY, orbitDist) {
     const s1 = Math.sin(angleX),
       c1 = Math.cos(angleX),
       s2 = Math.sin(angleY),
@@ -49,7 +49,7 @@ export class Utils {
     v3.mulScalar(base, Global.rInner, base);
 
     const extra = v3.create(c2 * s1, s2, c2 * c1);
-    v3.mulScalar(extra, Global.rOuter + Global.orbitDist, extra);
+    v3.mulScalar(extra, Global.rOuter + orbitDist, extra);
 
     return v3.add(base, extra);
   }

@@ -4,11 +4,13 @@ import { Loader } from '/loader.js';
 import { Renderer } from '/renderer.js';
 import { TorusShader } from '/torusshader.js';
 import { Maze } from '/maze.js';
+import { Entity } from '/entity.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;
 const camera = Global.camera;
 const maze = new Maze(Global.gridWidth, Global.gridHeight);
+const playerEntity = new Entity(maze);
 
 let program, model, mazeTexture, mouseDown = false;
 
@@ -81,6 +83,22 @@ function onKey(e) {
   if (e.code === 'KeyR') {
     fetchMaze();
   }
+  else if (e.code == 'KeyW') {
+    playerEntity.tryMoveUp();
+    program.setInvPlayerMatrix(playerEntity.mat);
+  }
+  else if (e.code == 'KeyD') {
+    playerEntity.tryMoveRight();
+    program.setInvPlayerMatrix(playerEntity.mat);
+  }
+  else if (e.code == 'KeyS') {
+    playerEntity.tryMoveDown();
+    program.setInvPlayerMatrix(playerEntity.mat);
+  }
+  else if (e.code == 'KeyA') {
+    playerEntity.tryMoveLeft();
+    program.setInvPlayerMatrix(playerEntity.mat);
+  }
 }
 
 
@@ -111,7 +129,7 @@ function init() {
   mazeTexture = Loader.LoadMazeTexture(maze);
 
   program = new TorusShader(Global.displayWidth, Global.displayHeight,
-    Global.projMatInv, Global.viewMatInv, 0);
+    Global.projMatInv, Global.viewMatInv, 0, playerEntity);
 
   model = Loader.LoadTorusRect();
 }
@@ -140,7 +158,7 @@ function update(currTime) {
   oldTime = currTime;
 
   camera.target = Utils.CalcTargetPos(camera.angleX);
-  camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY);
+  camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY, Global.orbitDist);
   camera.up = Utils.CalcOrbitUp(camera.angleX, camera.angleY);
   Utils.CalcViewMatrix();
 

@@ -11,8 +11,9 @@ export class TorusShader extends ShaderProgram {
     #loc_mViewInv;
     #loc_time;
     #loc_mazeText;
+    #loc_mPlayerInv;
 
-    constructor(width, height, mProjInv, mViewInv, mazeText) {
+    constructor(width, height, mProjInv, mViewInv, mazeText, playerEntity) {
         super();
 
         const shaderInfos = [
@@ -27,6 +28,7 @@ export class TorusShader extends ShaderProgram {
         this.setInvProjMatrix(mProjInv);
         this.setInvViewMatrix(mViewInv);
         this.setMazeTexture(mazeText);
+        this.setInvPlayerMatrix(playerEntity.mat);
     }
 
     _bindAttributes = function () {
@@ -39,6 +41,7 @@ export class TorusShader extends ShaderProgram {
         this.#loc_mViewInv = this._getUniformLocation('mViewInv');
         this.#loc_time = this._getUniformLocation('time');
         this.#loc_mazeText = this._getUniformLocation('mazeText');
+        this.#loc_mPlayerInv = this._getUniformLocation('mPlayerInv');
     }
 
     setTime(time) {
@@ -59,5 +62,9 @@ export class TorusShader extends ShaderProgram {
 
     setMazeTexture(texture) {
         ShaderProgram._LoadInt(this.#loc_mazeText, texture);
+    }
+
+    setInvPlayerMatrix(mPlayerInv) {
+        ShaderProgram._LoadMatrix(this.#loc_mPlayerInv, mPlayerInv);
     }
 }

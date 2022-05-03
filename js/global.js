@@ -11,6 +11,7 @@ export class Global {
     static rOuter = 0.1;
     static rInner = 0.6;
     static orbitDist = 0.2;
+    static entityOrbitDist = 0.03;
 
     static gridWidth = 60;
     static gridHeight = 10;
