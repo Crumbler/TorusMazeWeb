@@ -32,27 +32,32 @@ export class Utils {
     m4.inverse(Global.viewMatInv, Global.viewMat);
   }
 
-  static CalcOrbitPosAndTarget(camera) {
-    const s1 = Math.sin(camera.angleX),
-      c1 = Math.cos(camera.angleX),
-      s2 = Math.sin(camera.angleY),
-      c2 = Math.cos(camera.angleY);
+  static CalcTargetPos(angleX) {
+    const s1 = Math.sin(angleX),
+      c1 = Math.cos(angleX);
+
+    return v3.mulScalar(v3.create(s1, 0.0, c1), Global.rInner);
+  }
+
+  static CalcOrbitPos(angleX, angleY) {
+    const s1 = Math.sin(angleX),
+      c1 = Math.cos(angleX),
+      s2 = Math.sin(angleY),
+      c2 = Math.cos(angleY);
 
     const base = v3.create(s1, 0.0, c1);
     v3.mulScalar(base, Global.rInner, base);
 
-    v3.copy(base, camera.target);
-
     const extra = v3.create(c2 * s1, s2, c2 * c1);
     v3.mulScalar(extra, Global.rOuter + Global.orbitDist, extra);
 
-    v3.add(base, extra, camera.pos);
+    return v3.add(base, extra);
   }
 
-  static CalcOrbitUp(camera) {
-    const rx = m4.rotationY(camera.angleX);
-    m4.rotateX(rx, -camera.angleY, rx);
+  static CalcOrbitUp(angleX, angleY) {
+    const rx = m4.rotationY(angleX);
+    m4.rotateX(rx, -angleY, rx);
 
-    m4.transformDirection(rx, v3.create(0.0, 1.0, 0.0), camera.up);
+    return m4.transformDirection(rx, v3.create(0.0, 1.0, 0.0));
   }
 }

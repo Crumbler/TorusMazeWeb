@@ -139,8 +139,9 @@ function update(currTime) {
   const deltaTime = currTime - oldTime;
   oldTime = currTime;
 
-  Utils.CalcOrbitPosAndTarget(camera);
-  Utils.CalcOrbitUp(camera);
+  camera.target = Utils.CalcTargetPos(camera.angleX);
+  camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY);
+  camera.up = Utils.CalcOrbitUp(camera.angleX, camera.angleY);
   Utils.CalcViewMatrix();
 
   display(currTime);
