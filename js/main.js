@@ -10,7 +10,8 @@ const canvas = Global.canvas;
 const gl = Global.gl;
 const camera = Global.camera;
 const maze = new Maze(Global.gridWidth, Global.gridHeight);
-const playerEntity = new Entity(maze);
+const playerEntity = new Entity(maze),
+  endEntity = new Entity(maze, Global.gridHeight / 2, Global.gridWidth / 2);
 
 let program, model, mazeTexture, mouseDown = false;
 
@@ -79,6 +80,14 @@ function onMouseMove(e) {
 }
 
 
+function checkVictory() {
+  if (playerEntity.i === endEntity.i &&
+      playerEntity.j === endEntity.j) {
+    fetchMaze();
+  }
+}
+
+
 function onKey(e) {
   if (e.code === 'KeyR') {
     fetchMaze();
@@ -86,18 +95,22 @@ function onKey(e) {
   else if (e.code == 'KeyW') {
     playerEntity.tryMoveUp();
     program.setInvPlayerMatrix(playerEntity.mat);
+    checkVictory();
   }
   else if (e.code == 'KeyD') {
     playerEntity.tryMoveRight();
     program.setInvPlayerMatrix(playerEntity.mat);
+    checkVictory();
   }
   else if (e.code == 'KeyS') {
     playerEntity.tryMoveDown();
     program.setInvPlayerMatrix(playerEntity.mat);
+    checkVictory();
   }
   else if (e.code == 'KeyA') {
     playerEntity.tryMoveLeft();
     program.setInvPlayerMatrix(playerEntity.mat);
+    checkVictory();
   }
 }
 
@@ -114,6 +127,11 @@ async function fetchMaze() {
   Loader.UpdateMazeTexture(mazeTexture, maze);
 
   camera.reset();
+
+  playerEntity.i = 0;
+  playerEntity.j = 0;
+  playerEntity.updatePos();
+  program.setInvPlayerMatrix(playerEntity.mat);
 }
 
 
@@ -129,7 +147,7 @@ function init() {
   mazeTexture = Loader.LoadMazeTexture(maze);
 
   program = new TorusShader(Global.displayWidth, Global.displayHeight,
-    Global.projMatInv, Global.viewMatInv, 0, playerEntity);
+    Global.projMatInv, Global.viewMatInv, 0, playerEntity, endEntity);
 
   model = Loader.LoadTorusRect();
 }

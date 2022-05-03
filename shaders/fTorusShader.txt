@@ -8,6 +8,7 @@ uniform mat4 mProjInv;
 uniform mat4 mViewInv;
 uniform sampler2D mazeText;
 uniform mat4 mPlayerInv;
+uniform mat4 mEndInv;
 
 out vec4 outColor;
 
@@ -99,6 +100,7 @@ float map(vec3 p)
     float res = sdTorus(p, rOuter, rInner);
 
     res = min(res, sdSphere((mPlayerInv * p4).xyz, sphereR));
+    res = min(res, sdSphere((mEndInv * p4).xyz, sphereR));
 
     return res;
 }
@@ -130,10 +132,12 @@ void main()
 
     vec4 pos4 = vec4(pos, 1.0);
     float hitTorus = step(sdTorus(pos, rOuter, rInner), eps * 0.5),
-        hitPlayer = step(sdSphere((mPlayerInv * pos4).xyz, sphereR), eps * 0.5);
+        hitPlayer = step(sdSphere((mPlayerInv * pos4).xyz, sphereR), eps * 0.5),
+        hitEnd = step(sdSphere((mEndInv * pos4).xyz, sphereR), eps * 0.5);
 
     vec3 col = hitTorus * torusColor(pos) +
-        hitPlayer * vec3(0.0, 1.0, 0.0);
+        hitPlayer * vec3(0.0, 1.0, 0.0) +
+        hitEnd * vec3(0.0, 1.0, 1.0);
 
     outColor = vec4(col, 1.0);
 }
