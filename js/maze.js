@@ -55,8 +55,11 @@ export class Maze {
         else if (deltaJ === 1 || deltaJ === 1 - this.width) {
             return (this.grid[ind1] & wallRight) === 0;
         }
-        else {
+        else if (deltaJ === -1 || deltaJ === this.width - 1) {
             return (this.grid[ind1] & wallLeft) === 0;
+        }
+        else {
+            return false;
         }
     }
 }
