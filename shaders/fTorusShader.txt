@@ -125,7 +125,7 @@ void main()
     {
         pos = ro + t * rd;
         h = map(pos);
-        if (h <= eps * 0.01) 
+        if (h <= eps * 0.01 || h >= 5.0) 
             break;
         t += h;
     }
