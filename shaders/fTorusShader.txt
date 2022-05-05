@@ -85,9 +85,12 @@ vec3 torusColor(vec3 p)
     uv /= gridDivisor;
     col3 = texture(mazeText, uv).r;
 
-    col1 *= step(c1, lineWidth);
-    col2 *= step(c2, lineWidth);
-    col3 *= step(c1, lineWidth) * step(c2, lineWidth);
+    float step1 = step(c1, lineWidth),
+        step2 = step(c2, lineWidth);
+
+    col1 *= step1;
+    col2 *= step2;
+    col3 *= step1 * step2;
 
     col2 = max(col2, col3);
 
@@ -121,7 +124,7 @@ void main()
     vec3 pos;
     float t = 0.0;
     float h;
-    for(int i = 0; i < 64; ++i)
+    for (int i = 0; i < 64; ++i)
     {
         pos = ro + t * rd;
         h = map(pos);
