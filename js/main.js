@@ -13,7 +13,8 @@ const maze = new Maze(Global.gridWidth, Global.gridHeight);
 const playerEntity = new Entity(maze),
   endEntity = new Entity(maze, Global.gridHeight / 2, Global.gridWidth / 2);
 
-let program, model, mazeTexture, mouseDown = false;
+let program, model, mazeTexture,
+  mouseLeftDown = false, mouseRightDown = false;
 
 
 async function main() {
@@ -46,25 +47,32 @@ function calcMatrices() {
 
 function onMouseDown(e) {
   if (e.button === 0) {
-    mouseDown = true;
+    mouseLeftDown = true;
+  }
+  else if (e.button === 2) {
+    mouseRightDown = true;
   }
 }
 
 
 function onMouseUp(e) {
   if (e.button === 0) {
-    mouseDown = false;
+    mouseLeftDown = false;
+  }
+  else if (e.button === 2) {
+    mouseRightDown = false;
   }
 }
 
 
 function onMouseLeave(e) {
-  mouseDown = false;
+  mouseLeftDown = false;
+  mouseRightDown = false;
 }
 
 
 function onMouseMove(e) {
-  if (mouseDown) {
+  if (mouseLeftDown) {
     camera.angleX += -e.movementX * 0.01;
 
     if (Math.abs(camera.angleX) > Math.PI * 2.0) {
@@ -77,12 +85,19 @@ function onMouseMove(e) {
       camera.angleY -= Math.sign(camera.angleY) * Math.PI * 2.0;
     }
   }
+
+  if (mouseRightDown) {
+    if (Utils.TryCastAndMove(e.offsetX, e.offsetY, playerEntity, maze)) {
+      program.setInvPlayerMatrix(playerEntity.mat);
+      checkVictory();
+    }
+  }
 }
 
 
 function checkVictory() {
   if (playerEntity.i === endEntity.i &&
-      playerEntity.j === endEntity.j) {
+    playerEntity.j === endEntity.j) {
     fetchMaze();
   }
 }

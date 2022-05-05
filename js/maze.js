@@ -44,6 +44,10 @@ export class Maze {
         const deltaI = i2 - i1,
             deltaJ = j2 - j1;
 
+        if (deltaI !== 0 && deltaJ !== 0) {
+            return false;
+        }
+
         const ind1 = this.cellInd(i1, j1);
 
         if (deltaI === 1 || deltaI === 1 - this.height) {
