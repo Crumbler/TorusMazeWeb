@@ -1,16 +1,14 @@
 
 import { m4 } from '/twgl.js';
-import { Camera } from '/camera.js';
 
 export class Global {
     static canvas = document.querySelector("#c");
     static gl = Global.canvas.getContext("webgl2");
 
-    static camera = new Camera();
-
     static rOuter = 0.1;
     static rInner = 0.6;
     static orbitDist = 0.2;
+    static orbitDelta = 0.05;
     static entityOrbitDist = 0.03;
 
     static gridWidth = 60;

@@ -26,8 +26,8 @@ export class Utils {
     m4.inverse(Global.projMat, Global.projMatInv);
   }
 
-  static CalcViewMatrix() {
-    m4.lookAt(Global.camera.pos, Global.camera.target, Global.camera.up, Global.viewMatInv);
+  static CalcViewMatrix(camera) {
+    m4.lookAt(camera.pos, camera.target, camera.up, Global.viewMatInv);
 
     m4.inverse(Global.viewMatInv, Global.viewMat);
   }
@@ -61,8 +61,8 @@ export class Utils {
     return m4.transformDirection(rx, v3.create(0.0, 1.0, 0.0));
   }
 
-  static TryCastAndMove(x, y, playerEntity, maze) {
-    const cast = Utils.#CastToTorus(x, y);
+  static TryCastAndMove(x, y, playerEntity, camera, maze) {
+    const cast = Utils.#CastToTorus(camera, x, y);
     let moved = false;
 
     if (cast.hit) {
@@ -105,9 +105,9 @@ export class Utils {
     return res + 0.5 - Math.floor(res + 0.5);
   }
 
-  static #CastToTorus(x, y) {
+  static #CastToTorus(camera, x, y) {
     const rayDir = Utils.#RayFromCam(x, y),
-      rayOrigin = Global.camera.pos;
+      rayOrigin = camera.pos;
 
     let t = 0.0, h, pos = v3.create(0.0, 0.0, 0.0);
 
@@ -155,5 +155,17 @@ export class Utils {
     v3.normalize(rayClip, rayClip);
 
     return rayClip;
+  }
+
+  static Clamp(x, min, max) {
+    if (x < min) {
+      return min;
+    }
+
+    if (x > max) {
+      return max;
+    }
+
+    return x;
   }
 }

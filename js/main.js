@@ -5,10 +5,11 @@ import { Renderer } from '/renderer.js';
 import { TorusShader } from '/torusshader.js';
 import { Maze } from '/maze.js';
 import { Entity } from '/entity.js';
+import { Camera } from '/camera.js';
 
 const canvas = Global.canvas;
 const gl = Global.gl;
-const camera = Global.camera;
+const camera = new Camera();
 const maze = new Maze(Global.gridWidth, Global.gridHeight);
 const playerEntity = new Entity(maze),
   endEntity = new Entity(maze, Global.gridHeight / 2, Global.gridWidth / 2);
@@ -28,6 +29,7 @@ async function main() {
   canvas.addEventListener('mouseup', onMouseUp);
   canvas.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('mouseleave', onMouseLeave);
+  canvas.addEventListener('wheel', onMouseScroll);
 
   await Global.Init();
 
@@ -41,7 +43,14 @@ async function main() {
 
 function calcMatrices() {
   Utils.CalcProjectionMatrix();
-  Utils.CalcViewMatrix();
+  Utils.CalcViewMatrix(camera);
+}
+
+
+function onMouseScroll(e) {
+  e.preventDefault();
+
+  camera.changeOrbitDistance(e.deltaY * 0.0002);
 }
 
 
@@ -87,7 +96,7 @@ function onMouseMove(e) {
   }
 
   if (mouseRightDown) {
-    if (Utils.TryCastAndMove(e.offsetX, e.offsetY, playerEntity, maze)) {
+    if (Utils.TryCastAndMove(e.offsetX, e.offsetY, playerEntity, camera, maze)) {
       program.setInvPlayerMatrix(playerEntity.mat);
       checkVictory();
     }
@@ -154,8 +163,8 @@ function init() {
   gl.clearColor(0, 0, 0, 1);
   gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
-  Global.camera.pos[1] = 0.5;
-  Global.camera.pos[2] = 1.5;
+  camera.pos[1] = 0.5;
+  camera.pos[2] = 1.5;
 
   calcMatrices();
 
@@ -190,10 +199,12 @@ function update(currTime) {
   const deltaTime = currTime - oldTime;
   oldTime = currTime;
 
+  camera.updateSmooth(deltaTime);
+
   camera.target = Utils.CalcTargetPos(camera.angleX);
-  camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY, Global.orbitDist);
+  camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY, camera.orbitDistance);
   camera.up = Utils.CalcOrbitUp(camera.angleX, camera.angleY);
-  Utils.CalcViewMatrix();
+  Utils.CalcViewMatrix(camera);
 
   display(currTime);
 
