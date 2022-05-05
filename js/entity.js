@@ -1,13 +1,14 @@
 
 import { Global } from '/global.js';
 import { Utils } from '/utils.js';
-import { m4 } from '/twgl.js';
+import { v3, m4 } from '/twgl.js';
 
 export class Entity {
     maze;
     i;
     j;
     pos;
+    targetPos;
     mat;
 
     constructor(maze, i = 0, j = 0) {
@@ -16,18 +17,31 @@ export class Entity {
         this.j = j;
         this.mat = m4.identity();
 
-        this.updatePos();
+        this.updatePos(true);
     }
 
-    updatePos() {
+    updatePos(initial = false) {
         const angleX = ((this.j + 0.5) / this.maze.width) * 2.0 * Math.PI,
             angleY = ((this.i + 0.5) / this.maze.height) * 2.0 * Math.PI;
 
-        this.pos = Utils.CalcOrbitPos(angleX, angleY, Global.entityOrbitDist);
-        this.calcMatrix();
+        this.targetPos = Utils.CalcOrbitPos(angleX, angleY, Global.entityOrbitDist);
+        if (initial) {
+            this.pos = Utils.CalcOrbitPos(angleX, angleY, Global.entityOrbitDist);
+        }
+
+        this.#calcMatrix();
     }
 
-    calcMatrix() {
+    updateSmooth(dt) {
+        const smoothRatio = 10.0;
+        const change = Utils.Clamp(smoothRatio * dt, 0.0, 1.0);
+        const dv = v3.subtract(this.targetPos, this.pos);
+        v3.mulScalar(dv, change, dv);
+
+        v3.add(this.pos, dv, this.pos);
+    }
+
+    #calcMatrix() {
         m4.translation(this.pos, this.mat);
         m4.inverse(this.mat, this.mat);
     }

@@ -97,7 +97,6 @@ function onMouseMove(e) {
 
   if (mouseRightDown) {
     if (Utils.TryCastAndMove(e.offsetX, e.offsetY, playerEntity, camera, maze)) {
-      program.setInvPlayerMatrix(playerEntity.mat);
       checkVictory();
     }
   }
@@ -118,22 +117,18 @@ function onKey(e) {
   }
   else if (e.code == 'KeyW') {
     playerEntity.tryMoveUp();
-    program.setInvPlayerMatrix(playerEntity.mat);
     checkVictory();
   }
   else if (e.code == 'KeyD') {
     playerEntity.tryMoveRight();
-    program.setInvPlayerMatrix(playerEntity.mat);
     checkVictory();
   }
   else if (e.code == 'KeyS') {
     playerEntity.tryMoveDown();
-    program.setInvPlayerMatrix(playerEntity.mat);
     checkVictory();
   }
   else if (e.code == 'KeyA') {
     playerEntity.tryMoveLeft();
-    program.setInvPlayerMatrix(playerEntity.mat);
     checkVictory();
   }
 }
@@ -154,8 +149,6 @@ async function fetchMaze() {
 
   playerEntity.i = 0;
   playerEntity.j = 0;
-  playerEntity.updatePos();
-  program.setInvPlayerMatrix(playerEntity.mat);
 }
 
 
@@ -200,11 +193,15 @@ function update(currTime) {
   oldTime = currTime;
 
   camera.updateSmooth(deltaTime);
+  playerEntity.updateSmooth(deltaTime);
 
   camera.target = Utils.CalcTargetPos(camera.angleX);
   camera.pos = Utils.CalcOrbitPos(camera.angleX, camera.angleY, camera.orbitDistance);
   camera.up = Utils.CalcOrbitUp(camera.angleX, camera.angleY);
   Utils.CalcViewMatrix(camera);
+
+  playerEntity.updatePos();
+  program.setInvPlayerMatrix(playerEntity.mat);
 
   display(currTime);
 
